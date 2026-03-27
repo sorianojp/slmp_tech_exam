@@ -1,58 +1,77 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# JSONPlaceholder Laravel API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A complete Laravel application that fetches data from the external JSONPlaceholder API via a custom Artisan command, stores it in a local database using Eloquent, and serves it through a secure RESTful API using Laravel Sanctum.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+* Custom Artisan console command for external API consumption.
+* Automatic database seeding using Eloquent `updateOrCreate`.
+* Secure token authentication via Laravel Sanctum.
+* Full RESTful CRUD routing for nested and standalone resources.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Setup Instructions
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+1. **Clone the repository:**
+   `git clone https://github.com/username/jsonplaceholder-api.git`
+   `cd jsonplaceholder-api`
 
-## Learning Laravel
+2. **Install dependencies:**
+   `composer install`
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+3. **Environment Setup:**
+   Copy the example environment file:
+   `cp .env.example .env`
+   
+   Generate the application key:
+   `php artisan key:generate`
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+4. **Database Setup:**
+   Configure your database in the `.env` file. By default, Laravel uses SQLite.
+   Run the migrations to create the tables:
+   `php artisan migrate`
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+5. **Fetch and Seed Data:**
+   Run the custom Artisan command to populate the database with users, posts, comments, albums, photos, and todos:
+   `php artisan app:fetch-placeholder-data`
 
-## Agentic Development
+6. **Serve the Application:**
+   `php artisan serve`
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Authentication Guide
 
-```bash
-composer require laravel/boost --dev
+This API uses Laravel Sanctum. You must authenticate to receive a Bearer Token to access the protected endpoints.
 
-php artisan boost:install
-```
+1. **Obtain a Token:**
+   * Make a `POST` request to `http://localhost:8000/api/login`.
+   * Send the following JSON body credentials:
+     * `email`: Sincere@april.biz
+     * `password`: password123
+   * The response will contain your plain text token.
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+2. **Access Protected Routes:**
+   * Add an `Authorization` header to your subsequent requests.
+   * Set the value to `Bearer your_generated_token_here`.
 
-## Contributing
+## Testing with Postman
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+A complete Postman Collection is available for testing all endpoints. 
+Simply import the `JSONPlaceholder_Laravel_API.postman_collection.json` file (if included in the repo) or manually configure the routes below. The login route in the provided collection automatically sets the Bearer token as a global variable for seamless testing.
 
-## Code of Conduct
+## Available Endpoints
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Public:**
+* `POST /api/login`
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Protected (Require Bearer Token):**
+* `GET /api/posts`
+* `GET /api/posts/{id}`
+* `POST /api/posts`
+* `PUT /api/posts/{id}`
+* `DELETE /api/posts/{id}`
+* `GET /api/posts/{postId}/comments`
+* `GET /api/comments`
+* `GET /api/comments?postId={id}`
+* `GET /api/albums`
+* `GET /api/photos`
+* `GET /api/todos`
+* `GET /api/users`
